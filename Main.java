@@ -37,40 +37,43 @@ public class Main {
 
     // Play one game
     public static void playOneGame() {
-        // Ask the user for the upper and lower bounds
         System.out.println("What do you want the upper bound to be? ");
         int upperBound = scnr.nextInt();
         System.out.println("What do you want the lower bound to be? ");
         int lowerBound = scnr.nextInt();
-        // Initialize the NumberGuesser with the given bounds
+        scnr.nextLine(); // Consume the newline left after nextInt()
+
         NumberGuesser guesser = new NumberGuesser(lowerBound, upperBound);
-        // Initialize the guess count
-        int guessCount = 1;
-        // Keep guessing until the computer gets it right
-        while (guesser.getCurrentGuess() != 50) {
-            // Print the current guess and ask the user if it's higher, lower, or correct
+        boolean isCorrect = false; // Flag to keep track of whether the guess is correct
+        int guessCount = 0; // Initialize guess count
+
+        while (!isCorrect) {
+            if (guessCount >= 50) {
+                System.out.println("Too many guesses! Something might be wrong, or the range is too wide, or there's been a misunderstanding.");
+                break; // Exit the loop if the guess count exceeds 50
+            }
+
             System.out.println("Is it " + guesser.getCurrentGuess() + "? (h/l/c): ");
-            // Read the user's response
             char response = scnr.next().charAt(0);
-            // Adjust the guesser based on the user's response
+            scnr.nextLine(); // Consume the newline
+
             if (response == 'h') {
                 guesser.higher();
             } else if (response == 'l') {
                 guesser.lower();
             } else if (response == 'c') {
-                // If the user says it's correct, print a message and break the loop
+                isCorrect = true; // Set the flag to true as the guess is correct
                 System.out.println("The computer got it!");
-                break;
+            } else {
+                System.out.println("Please enter 'h' for higher, 'l' for lower, or 'c' if the guess is correct.");
+                continue; // Skip the rest of the loop for invalid inputs
             }
-            // Increment the guess count
-            guessCount++;
-            // If the computer has guessed 50 times, print a message and break the loop
-            if (guessCount == 50) {
-                System.out.println("Computer has guessed 50 times. Either the range is too wide or the user is cheating! Game over.");
-                break;
-            }
+            guessCount++; // Increment guess count after a valid response or attempt
         }
-        // Print the number of guesses it took the computer to get the number
-        System.out.println("The computer took " + guessCount + " guesses to get the number!");
+
+        if (isCorrect) {
+            // Print the number of guesses only if the user confirmed a correct guess
+            System.out.println("The computer took " + guessCount + " guesses to get the number!");
+        }
     }
 }
